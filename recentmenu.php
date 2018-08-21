@@ -139,8 +139,17 @@ function recentmenu_civicrm_entityTypes(&$entityTypes) {
  *
  * Flush menu cache when adding recent item.
  */
-function recentmenu_civicrm_recent() {
-  CRM_Core_BAO_Navigation::resetNavigation(CRM_Core_Session::getLoggedInContactID());
+function recentmenu_civicrm_recent($newItems) {
+  $oldItems = (array) CRM_Core_Session::singleton()->get(CRM_Utils_Recent::STORE_NAME);
+  $different = FALSE;
+  foreach ($newItems as $i => $item) {
+    if (!(isset($oldItems[$i]) && $oldItems[$i]['id'] == $item['id'] && $oldItems[$i]['type'] == $item['type'])) {
+      $different = TRUE;
+    }
+  }
+  if ($different) {
+    CRM_Core_BAO_Navigation::resetNavigation(CRM_Core_Session::getLoggedInContactID());
+  }
 }
 
 /**
