@@ -151,28 +151,35 @@ function recentmenu_civicrm_recent() {
 function recentmenu_civicrm_navigationMenu(&$menu) {
   $icons = [
     'Individual' => 'fa-user',
-    'Organization' => 'fa-building',
     'Household' => 'fa-home',
+    'Organization' => 'fa-building',
+    'Activity' => 'fa-tasks',
+    'Case' => 'fa-folder-o',
+    'Contribution' => 'fa-credit-card',
+    'Grant' => 'fa-money',
+    'Group' => 'fa-users',
+    'Membership' => 'fa-id-badge',
+    'Note' => 'fa-sticky-note-o',
+    'Participant' => 'fa-calendar-check-o',
+    'Pledge' => 'fa-paper-plane',
     'Relationship' => 'fa-user-circle-o',
   ];
   $recent = CRM_Utils_Recent::get();
   _recentmenu_civix_insert_navigation_menu($menu, NULL, [
-    'label' => E::ts('Recent Items (%1)', [1 => count($recent)]),
+    'label' => E::ts('Recent (%1)', [1 => count($recent)]),
     'name' => 'recent_items',
     'class' => 'crm-recent-items-menu',
     'permission' => 'access CiviCRM',
+    'icon' => 'crm-i fa-history',
   ]);
   foreach ($recent as $i => $item) {
-    $icon = NULL;
-    if (!empty($item['type'])) {
-      $icon = 'crm-i ' . CRM_Utils_Array::value($item['type'], $icons, 'fa-gear');
-    }
     _recentmenu_civix_insert_navigation_menu($menu, 'recent_items', [
       'label' => $item['title'],
       'url' => $item['url'],
       'name' => 'recent_items_' . $i,
       'permission' => 'access CiviCRM',
-      'icon' => $icon,
+      'title' => $item['type'],
+      'icon' => 'crm-i fa-fw ' . CRM_Utils_Array::value($item['type'], $icons, 'fa-gear'),
     ]);
     _recentmenu_civix_insert_navigation_menu($menu, 'recent_items/recent_items_' . $i, [
       'label' => E::ts('View'),
