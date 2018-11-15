@@ -135,83 +135,66 @@ function recentmenu_civicrm_entityTypes(&$entityTypes) {
 }
 
 /**
- * Implements hook_civicrm_recent().
- *
- * Flush menu cache when adding recent item.
+ * Implements hook_civicrm_coreResourceList().
  */
-function recentmenu_civicrm_recent($newItems) {
-  $oldItems = (array) CRM_Core_Session::singleton()->get(CRM_Utils_Recent::STORE_NAME);
-  $different = FALSE;
-  foreach ($newItems as $i => $item) {
-    if (!(isset($oldItems[$i]) && $oldItems[$i]['id'] == $item['id'] && $oldItems[$i]['type'] == $item['type'])) {
-      $different = TRUE;
+function recentmenu_civicrm_coreResourceList(&$list, $region) {
+  if ($region == 'html-header' && CRM_Core_Permission::check('access CiviCRM')) {
+    $icons = [
+      'Individual' => 'fa-user',
+      'Household' => 'fa-home',
+      'Organization' => 'fa-building',
+      'Activity' => 'fa-tasks',
+      'Case' => 'fa-folder-open',
+      'Contribution' => 'fa-credit-card',
+      'Grant' => 'fa-money',
+      'Group' => 'fa-users',
+      'Membership' => 'fa-id-badge',
+      'Note' => 'fa-sticky-note',
+      'Participant' => 'fa-ticket',
+      'Pledge' => 'fa-paper-plane',
+      'Relationship' => 'fa-handshake-o',
+    ];
+    $recent = CRM_Utils_Recent::get();
+    $menu = [
+      'label' => E::ts('Recent (%1)', [1 => count($recent)]),
+      'name' => 'recent_items',
+      'icon' => 'crm-i fa-history',
+      'child' => [],
+    ];
+    foreach ($recent as $i => $item) {
+      $node = [
+        'label' => $item['title'],
+        'url' => $item['url'],
+        'name' => 'recent_items_' . $i,
+        'attr' => ['title' => $item['type']],
+        'icon' => 'crm-i fa-fw ' . CRM_Utils_Array::value($item['type'], $icons, 'fa-gear'),
+        'child' => [[
+          'label' => E::ts('View'),
+          'attr' => ['title' =>  E::ts('View %1', [1 => $item['type']])],
+          'url' => $item['url'],
+          'name' => 'recent_items_' . $i . '_view',
+        ]]
+      ];
+      if (!empty($item['edit_url'])) {
+        $node['child'][] = [
+          'label' => E::ts('Edit'),
+          'attr' => ['title' =>  E::ts('Edit %1', [1 => $item['type']])],
+          'url' => $item['edit_url'],
+          'name' => 'recent_items_' . $i . '_edit',
+        ];
+      }
+      if (!empty($item['delete_url'])) {
+        $node['child'][] = [
+          'label' => E::ts('Delete'),
+          'attr' => ['title' =>  E::ts('Delete %1', [1 => $item['type']])],
+          'url' => $item['delete_url'],
+          'name' => 'recent_items_' . $i . '_delete',
+        ];
+      }
+      $menu['child'][] = $node;
     }
+    Civi::resources()
+      ->addScriptFile('org.civicrm.recentmenu', 'js/recentmenu.js', -99)
+      ->addVars('recentmenu', $menu);
   }
-  if ($different) {
-    CRM_Core_BAO_Navigation::resetNavigation(CRM_Core_Session::getLoggedInContactID());
-  }
-}
-
-/**
- * Implements hook_civicrm_navigationMenu().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
- */
-function recentmenu_civicrm_navigationMenu(&$menu) {
-  $icons = [
-    'Individual' => 'fa-user',
-    'Household' => 'fa-home',
-    'Organization' => 'fa-building',
-    'Activity' => 'fa-tasks',
-    'Case' => 'fa-folder-open',
-    'Contribution' => 'fa-credit-card',
-    'Grant' => 'fa-money',
-    'Group' => 'fa-users',
-    'Membership' => 'fa-id-badge',
-    'Note' => 'fa-sticky-note',
-    'Participant' => 'fa-ticket',
-    'Pledge' => 'fa-paper-plane',
-    'Relationship' => 'fa-handshake-o',
-  ];
-  $recent = CRM_Utils_Recent::get();
-  _recentmenu_civix_insert_navigation_menu($menu, NULL, [
-    'label' => E::ts('Recent (%1)', [1 => count($recent)]),
-    'name' => 'recent_items',
-    'class' => 'crm-recent-items-menu',
-    'permission' => 'access CiviCRM',
-    'icon' => 'crm-i fa-history',
-  ]);
-  foreach ($recent as $i => $item) {
-    _recentmenu_civix_insert_navigation_menu($menu, 'recent_items', [
-      'label' => $item['title'],
-      'url' => $item['url'],
-      'name' => 'recent_items_' . $i,
-      'permission' => 'access CiviCRM',
-      'title' => $item['type'],
-      'icon' => 'crm-i fa-fw ' . CRM_Utils_Array::value($item['type'], $icons, 'fa-gear'),
-    ]);
-    _recentmenu_civix_insert_navigation_menu($menu, 'recent_items/recent_items_' . $i, [
-      'label' => E::ts('View'),
-      'url' => $item['url'],
-      'name' => 'recent_items_' . $i . '_view',
-      'permission' => 'access CiviCRM',
-    ]);
-    if (!empty($item['edit_url'])) {
-      _recentmenu_civix_insert_navigation_menu($menu, 'recent_items/recent_items_' . $i, [
-        'label' => E::ts('Edit'),
-        'url' => $item['edit_url'],
-        'name' => 'recent_items_' . $i . '_edit',
-        'permission' => 'access CiviCRM',
-      ]);
-    }
-    if (!empty($item['delete_url'])) {
-      _recentmenu_civix_insert_navigation_menu($menu, 'recent_items/recent_items_' . $i, [
-        'label' => E::ts('Delete'),
-        'url' => $item['delete_url'],
-        'name' => 'recent_items_' . $i . '_delete',
-        'permission' => 'access CiviCRM',
-      ]);
-    }
-  }
-  _recentmenu_civix_navigationMenu($menu);
 }
