@@ -163,15 +163,15 @@ function recentmenu_civicrm_navigationMenu(&$menu) {
     'Household' => 'fa-home',
     'Organization' => 'fa-building',
     'Activity' => 'fa-tasks',
-    'Case' => 'fa-folder-o',
+    'Case' => 'fa-folder-open',
     'Contribution' => 'fa-credit-card',
     'Grant' => 'fa-money',
     'Group' => 'fa-users',
     'Membership' => 'fa-id-badge',
-    'Note' => 'fa-sticky-note-o',
-    'Participant' => 'fa-calendar-check-o',
+    'Note' => 'fa-sticky-note',
+    'Participant' => 'fa-ticket',
     'Pledge' => 'fa-paper-plane',
-    'Relationship' => 'fa-user-circle-o',
+    'Relationship' => 'fa-handshake-o',
   ];
   $recent = CRM_Utils_Recent::get();
   _recentmenu_civix_insert_navigation_menu($menu, NULL, [
