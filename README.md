@@ -8,12 +8,8 @@ The extension is licensed under [AGPL-3.0](LICENSE.txt).
 
 ## Requirements
 
-* CiviCRM 5.6+
+* CiviCRM 5.8+KAM
 
 ## Usage
 
 Once installed, click on "Recent" in the menubar to access your recently viewed contacts, activities, contributions, etc.
-
-## Known Issues
-
-On some systems this may cause CiviCRM screens to load more slowly due to the need to refresh the menubar every time a recent item is added.

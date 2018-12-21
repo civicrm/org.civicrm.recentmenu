@@ -194,7 +194,7 @@ function recentmenu_civicrm_coreResourceList(&$list, $region) {
       $menu['child'][] = $node;
     }
     Civi::resources()
-      ->addScriptFile('org.civicrm.recentmenu', 'js/recentmenu.js', -99)
+      ->addScriptFile('org.civicrm.recentmenu', 'js/recentmenu.js', 0, 'html-header')
       ->addVars('recentmenu', $menu);
   }
 }
