@@ -135,66 +135,97 @@ function recentmenu_civicrm_entityTypes(&$entityTypes) {
 }
 
 /**
+ * Implements hook_civicrm_pageRun().
+ */
+function recentmenu_civicrm_pageRun(&$page) {
+  if (!empty($_REQUEST['snippet']) && in_array($_REQUEST['snippet'], ['json', 6])) {
+    $page->ajaxResponse['recentmenu_items'] = _get_recentmenu_items();
+  }
+}
+
+/**
+ * Implements hook_civicrm_preProcess().
+ */
+function recentmenu_civicrm_preProcess($formName, &$form) {
+  if (!empty($_REQUEST['snippet']) && in_array($_REQUEST['snippet'], ['json', 6])) {
+    $form->ajaxResponse['recentmenu_items'] = _get_recentmenu_items();
+  }
+}
+
+/**
+ * Implements hook_civicrm_postProcess().
+ */
+function recentmenu_civicrm_postProcess($formName, &$form) {
+  if (!empty($_REQUEST['snippet']) && in_array($_REQUEST['snippet'], ['json', 6])) {
+    $form->ajaxResponse['recentmenu_items'] = _get_recentmenu_items();
+  }
+}
+
+/**
  * Implements hook_civicrm_coreResourceList().
  */
 function recentmenu_civicrm_coreResourceList(&$list, $region) {
   if ($region == 'html-header' && CRM_Core_Permission::check('access CiviCRM')) {
-    $icons = [
-      'Individual' => 'fa-user',
-      'Household' => 'fa-home',
-      'Organization' => 'fa-building',
-      'Activity' => 'fa-tasks',
-      'Case' => 'fa-folder-open',
-      'Contribution' => 'fa-credit-card',
-      'Grant' => 'fa-money',
-      'Group' => 'fa-users',
-      'Membership' => 'fa-id-badge',
-      'Note' => 'fa-sticky-note',
-      'Participant' => 'fa-ticket',
-      'Pledge' => 'fa-paper-plane',
-      'Relationship' => 'fa-handshake-o',
-    ];
-    $recent = CRM_Utils_Recent::get();
-    $menu = [
-      'label' => E::ts('Recent (%1)', [1 => count($recent)]),
-      'name' => 'recent_items',
-      'icon' => 'crm-i fa-history',
-      'child' => [],
-    ];
-    foreach ($recent as $i => $item) {
-      $node = [
-        'label' => $item['title'],
-        'url' => $item['url'],
-        'name' => 'recent_items_' . $i,
-        'attr' => ['title' => $item['type']],
-        'icon' => 'crm-i fa-fw ' . CRM_Utils_Array::value($item['type'], $icons, 'fa-gear'),
-        'child' => [[
-          'label' => E::ts('View'),
-          'attr' => ['title' =>  E::ts('View %1', [1 => $item['type']])],
-          'url' => $item['url'],
-          'name' => 'recent_items_' . $i . '_view',
-        ]]
-      ];
-      if (!empty($item['edit_url'])) {
-        $node['child'][] = [
-          'label' => E::ts('Edit'),
-          'attr' => ['title' =>  E::ts('Edit %1', [1 => $item['type']])],
-          'url' => $item['edit_url'],
-          'name' => 'recent_items_' . $i . '_edit',
-        ];
-      }
-      if (!empty($item['delete_url'])) {
-        $node['child'][] = [
-          'label' => E::ts('Delete'),
-          'attr' => ['title' =>  E::ts('Delete %1', [1 => $item['type']])],
-          'url' => $item['delete_url'],
-          'name' => 'recent_items_' . $i . '_delete',
-        ];
-      }
-      $menu['child'][] = $node;
-    }
     Civi::resources()
       ->addScriptFile('org.civicrm.recentmenu', 'js/recentmenu.js', 0, 'html-header')
-      ->addVars('recentmenu', $menu);
+      ->addVars('recentmenu', _get_recentmenu_items());
   }
+}
+
+function _get_recentmenu_items() {
+  $icons = [
+    'Individual' => 'fa-user',
+    'Household' => 'fa-home',
+    'Organization' => 'fa-building',
+    'Activity' => 'fa-tasks',
+    'Case' => 'fa-folder-open',
+    'Contribution' => 'fa-credit-card',
+    'Grant' => 'fa-money',
+    'Group' => 'fa-users',
+    'Membership' => 'fa-id-badge',
+    'Note' => 'fa-sticky-note',
+    'Participant' => 'fa-ticket',
+    'Pledge' => 'fa-paper-plane',
+    'Relationship' => 'fa-handshake-o',
+  ];
+  $recent = CRM_Utils_Recent::get();
+  $menu = [
+    'label' => E::ts('Recent (%1)', [1 => count($recent)]),
+    'name' => 'recent_items',
+    'icon' => 'crm-i fa-history',
+    'child' => [],
+  ];
+  foreach ($recent as $i => $item) {
+    $node = [
+      'label' => $item['title'],
+      'url' => $item['url'],
+      'name' => 'recent_items_' . $i,
+      'attr' => ['title' => $item['type']],
+      'icon' => 'crm-i fa-fw ' . CRM_Utils_Array::value($item['type'], $icons, 'fa-gear'),
+      'child' => [[
+        'label' => E::ts('View'),
+        'attr' => ['title' => E::ts('View %1', [1 => $item['type']])],
+        'url' => $item['url'],
+        'name' => 'recent_items_' . $i . '_view',
+      ]]
+    ];
+    if (!empty($item['edit_url'])) {
+      $node['child'][] = [
+        'label' => E::ts('Edit'),
+        'attr' => ['title' => E::ts('Edit %1', [1 => $item['type']])],
+        'url' => $item['edit_url'],
+        'name' => 'recent_items_' . $i . '_edit',
+      ];
+    }
+    if (!empty($item['delete_url'])) {
+      $node['child'][] = [
+        'label' => E::ts('Delete'),
+        'attr' => ['title' => E::ts('Delete %1', [1 => $item['type']])],
+        'url' => $item['delete_url'],
+        'name' => 'recent_items_' . $i . '_delete',
+      ];
+    }
+    $menu['child'][] = $node;
+  }
+  return $menu;
 }
