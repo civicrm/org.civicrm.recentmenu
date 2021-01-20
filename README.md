@@ -8,7 +8,8 @@ The extension is licensed under [AGPL-3.0](LICENSE.txt).
 
 ## Requirements
 
-* CiviCRM 5.8+KAM
+* CiviCRM 5.8+
+* [KAM](https://github.com/aydun/uk.squiffle.kam) (for CiviCRM versions before 5.12)
 
 ## Usage
 
