@@ -18,11 +18,8 @@
   <version>1.2</version>
   <develStage>stable</develStage>
   <compatibility>
-    <ver>5.8</ver>
+    <ver>5.12</ver>
   </compatibility>
-  <requires>
-    <ext>uk.squiffle.kam</ext>
-  </requires>
   <comments>Once installed, click on "Recent" in the menubar to access your recently viewed contacts, activities, contributions, etc.</comments>
   <civix>
     <namespace>CRM/Recentmenu</namespace>
