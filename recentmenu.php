@@ -173,21 +173,6 @@ function recentmenu_civicrm_coreResourceList(&$list, $region) {
 }
 
 function _get_recentmenu_items() {
-  $icons = [
-    'Individual' => 'fa-user',
-    'Household' => 'fa-home',
-    'Organization' => 'fa-building',
-    'Activity' => 'fa-tasks',
-    'Case' => 'fa-folder-open',
-    'Contribution' => 'fa-credit-card',
-    'Grant' => 'fa-money',
-    'Group' => 'fa-users',
-    'Membership' => 'fa-id-badge',
-    'Note' => 'fa-sticky-note',
-    'Participant' => 'fa-ticket',
-    'Pledge' => 'fa-paper-plane',
-    'Relationship' => 'fa-handshake-o',
-  ];
   $recent = CRM_Utils_Recent::get();
   $menu = [
     'label' => E::ts('Recent (%1)', [1 => count($recent)]),
@@ -201,13 +186,15 @@ function _get_recentmenu_items() {
       'url' => $item['url'],
       'name' => 'recent_items_' . $i,
       'attr' => ['title' => $item['type']],
-      'icon' => 'crm-i fa-fw ' . CRM_Utils_Array::value($item['type'], $icons, 'fa-gear'),
-      'child' => [[
-        'label' => E::ts('View'),
-        'attr' => ['title' => E::ts('View %1', [1 => $item['type']])],
-        'url' => $item['url'],
-        'name' => 'recent_items_' . $i . '_view',
-      ]]
+      'icon' => 'crm-i fa-fw ' . ($item['icon'] ?? 'fa-gear'),
+      'child' => [
+        [
+          'label' => E::ts('View'),
+          'attr' => ['title' => E::ts('View %1', [1 => $item['type']])],
+          'url' => $item['url'],
+          'name' => 'recent_items_' . $i . '_view',
+        ],
+      ],
     ];
     if (!empty($item['edit_url'])) {
       $node['child'][] = [
