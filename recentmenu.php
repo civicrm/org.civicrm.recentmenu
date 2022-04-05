@@ -173,41 +173,43 @@ function recentmenu_civicrm_coreResourceList(&$list, $region) {
 }
 
 function _get_recentmenu_items() {
-  $recent = CRM_Utils_Recent::get();
+  $recent = \Civi\Api4\RecentItem::get()->execute();
   $menu = [
-    'label' => E::ts('Recent (%1)', [1 => count($recent)]),
+    'label' => E::ts('Recent (%1)', [1 => $recent->count()]),
     'name' => 'recent_items',
     'icon' => 'crm-i fa-history',
     'child' => [],
   ];
+  $entityTitles = \Civi\Api4\Entity::get(FALSE)
+    ->addSelect('name', 'title')
+    ->execute()
+    ->indexBy('name')->column('title');
   foreach ($recent as $i => $item) {
+    $entityTitle = $entityTitles[$item['entity_type']] ?? '';
     $node = [
       'label' => $item['title'],
-      'url' => $item['url'],
+      'url' => $item['view_url'],
       'name' => 'recent_items_' . $i,
-      'attr' => ['title' => $item['type']],
+      'attr' => ['title' => E::ts('View %1', [1 => $entityTitle])],
       'icon' => 'crm-i fa-fw ' . ($item['icon'] ?? 'fa-gear'),
       'child' => [
         [
-          'label' => E::ts('View'),
-          'attr' => ['title' => E::ts('View %1', [1 => $item['type']])],
-          'url' => $item['url'],
+          'label' => E::ts('View %1', [1 => $entityTitle]),
+          'url' => $item['view_url'],
           'name' => 'recent_items_' . $i . '_view',
         ],
       ],
     ];
     if (!empty($item['edit_url'])) {
       $node['child'][] = [
-        'label' => E::ts('Edit'),
-        'attr' => ['title' => E::ts('Edit %1', [1 => $item['type']])],
+        'label' => E::ts('Edit %1', [1 => $entityTitle]),
         'url' => $item['edit_url'],
         'name' => 'recent_items_' . $i . '_edit',
       ];
     }
     if (!empty($item['delete_url'])) {
       $node['child'][] = [
-        'label' => E::ts('Delete'),
-        'attr' => ['title' => E::ts('Delete %1', [1 => $item['type']])],
+        'label' => E::ts('Delete %1', [1 => $entityTitle]),
         'url' => $item['delete_url'],
         'name' => 'recent_items_' . $i . '_delete',
       ];
