@@ -172,12 +172,25 @@ function recentmenu_civicrm_coreResourceList(&$list, $region) {
   }
 }
 
+/**
+ * @return array|NULL
+ */
 function _get_recentmenu_items() {
+  // Lookup existing menu item to get the possibly user-defined label and icon
+  $navigation = \Civi\Api4\Navigation::get(FALSE)
+    ->addWhere('name', '=', 'recent_items')
+    ->addSelect('label', 'icon')
+    ->addWhere('domain_id', '=', 'current_domain')
+    ->execute()->first();
+  if (!$navigation) {
+    // Maybe the managed navigation entity hasn't been reconciled yet, e.g. mid-upgrade
+    return NULL;
+  }
   $recent = \Civi\Api4\RecentItem::get()->execute();
   $menu = [
-    'label' => E::ts('Recent (%1)', [1 => $recent->count()]),
+    'label' => $navigation['label'] . ' (' . $recent->count() . ')',
     'name' => 'recent_items',
-    'icon' => 'crm-i fa-history',
+    'icon' => $navigation['icon'],
     'child' => [],
   ];
   $entityTitles = \Civi\Api4\Entity::get(FALSE)
