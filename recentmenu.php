@@ -169,13 +169,6 @@ function _get_recentmenu_items() {
         'name' => 'recent_items_' . $i . '_edit',
       ];
     }
-    if (!empty($item['delete_url'])) {
-      $node['child'][] = [
-        'label' => E::ts('Delete %1', [1 => $entityTitle]),
-        'url' => $item['delete_url'],
-        'name' => 'recent_items_' . $i . '_delete',
-      ];
-    }
     $menu['child'][] = $node;
   }
   return $menu;
