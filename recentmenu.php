@@ -186,7 +186,13 @@ function _get_recentmenu_items() {
     // Maybe the managed navigation entity hasn't been reconciled yet, e.g. mid-upgrade
     return NULL;
   }
-  $recent = \Civi\Api4\RecentItem::get()->execute();
+  try {
+    $recent = \Civi\Api4\RecentItem::get()->execute();
+  }
+  catch (API_Exception $e) {
+    // No logged-in user?
+    return NULL;
+  }
   $menu = [
     'label' => $navigation['label'] . ' (' . $recent->count() . ')',
     'name' => 'recent_items',
