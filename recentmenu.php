@@ -109,9 +109,12 @@ function recentmenu_civicrm_postProcess($formName, &$form) {
  */
 function recentmenu_civicrm_coreResourceList(&$list, $region) {
   if ($region == 'html-header' && CRM_Core_Permission::check('access CiviCRM')) {
-    Civi::resources()
-      ->addScriptFile('org.civicrm.recentmenu', 'js/recentmenu.js', 0, 'html-header')
-      ->addVars('recentmenu', _get_recentmenu_items());
+    $recentMenuItems = _get_recentmenu_items();
+    if ($recentMenuItems) {
+      Civi::resources()
+        ->addScriptFile('org.civicrm.recentmenu', 'js/recentmenu.js', 0, 'html-header')
+        ->addVars('recentmenu', $recentMenuItems);
+    }
   }
 }
 
