@@ -1,9 +1,8 @@
 {
   "name":"australian_greens/org.civicrm.recentmenu",
-  "type":"drupal-module",
+  "type":"civicrm-ext",
   "description":"CiviCRM Extension to add in a menu holding recently viewed items",
   "require": {
-    "composer/installers": "*",
-    "drupal/drupal": "7.*"
+    "composer/installers": "^1.6"
   }
 }
