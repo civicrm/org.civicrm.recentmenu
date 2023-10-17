@@ -23,9 +23,12 @@
   <comments>Once installed, click on "Recent" in the menubar to access your recently viewed contacts, activities, contributions, etc.</comments>
   <civix>
     <namespace>CRM/Recentmenu</namespace>
-    <format>22.05.2</format>
+    <format>23.02.1</format>
   </civix>
   <mixins>
     <mixin>mgd-php@1.0.0</mixin>
   </mixins>
+  <classloader>
+    <psr4 prefix="Civi\" path="Civi"/>
+  </classloader>
 </extension>
