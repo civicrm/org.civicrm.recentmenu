@@ -61,7 +61,7 @@ function recentmenu_civicrm_postProcess($formName, &$form) {
  * Implements hook_civicrm_coreResourceList().
  */
 function recentmenu_civicrm_coreResourceList(&$list, $region) {
-  if ($region == 'html-header' && CRM_Core_Permission::check('access CiviCRM')) {
+  if ($region == 'html-header') {
     $recentMenuItems = _get_recentmenu_items();
     if ($recentMenuItems) {
       Civi::resources()
@@ -75,6 +75,9 @@ function recentmenu_civicrm_coreResourceList(&$list, $region) {
  * @return array|NULL
  */
 function _get_recentmenu_items() {
+  if (!CRM_Core_Permission::check('access CiviCRM')) {
+    return NULL;
+  }
   // Lookup existing menu item to get the possibly user-defined label and icon
   $navigation = \Civi\Api4\Navigation::get(FALSE)
     ->addWhere('name', '=', 'recent_items')
@@ -88,7 +91,7 @@ function _get_recentmenu_items() {
   try {
     $recent = \Civi\Api4\RecentItem::get()->execute();
   }
-  catch (API_Exception $e) {
+  catch (Exception $e) {
     // No logged-in user?
     return NULL;
   }
