@@ -1,13 +1,9 @@
 <?php
 use CRM_Recentmenu_ExtensionUtil as E;
 
-$menuItems = [];
-$domains = \Civi\Api4\Domain::get(FALSE)
-  ->addSelect('id')
-  ->execute();
-foreach ($domains as $domain) {
-  $menuItems[] = [
-    'name' => 'Navigation_recent_items_domain_' . $domain['id'],
+return [
+  [
+    'name' => 'Navigation_recent_items',
     'entity' => 'Navigation',
     'cleanup' => 'always',
     'update' => 'unmodified',
@@ -19,13 +15,9 @@ foreach ($domains as $domain) {
         'url' => NULL,
         'icon' => 'crm-i fa-history',
         'permission' => ['access CiviCRM'],
-        'permission_operator' => '',
-        'is_active' => TRUE,
-        'has_separator' => NULL,
         'parent_id' => NULL,
-        'domain_id' => $domain['id'],
       ],
+      'match' => ['name', 'domain_id'],
     ],
-  ];
-}
-return $menuItems;
+  ],
+];
