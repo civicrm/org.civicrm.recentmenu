@@ -1,0 +1,5 @@
+{htxt id="accesskeys"}
+  <ul class="crmAccessKeyList">
+    <li><span></span> - {ts}Open/close Recent items, on far right{/ts}</li>
+  </ul>
+{/htxt}

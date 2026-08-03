@@ -130,5 +130,11 @@ function _get_recentmenu_items() {
     }
     $menu['child'][] = $node;
   }
+  $menu['child'][] = [
+    'label' => E::ts("Open/close in sidebar (Ctrl or Cmd + ')"),
+    'url' => NULL,
+    'name' => 'recent_items_open_sidebar',
+    'separator' => 'top',
+  ];
   return $menu;
 }
