@@ -18,12 +18,12 @@
   <version>1.7</version>
   <develStage>stable</develStage>
   <compatibility>
-    <ver>6.4</ver>
+    <ver>6.16</ver>
   </compatibility>
   <comments>Once installed, click on "Recent" in the menubar to access your recently viewed contacts, activities, contributions, etc.</comments>
   <civix>
     <namespace>CRM/Recentmenu</namespace>
-    <format>25.10.2</format>
+    <format>26.10.3</format>
   </civix>
   <mixins>
     <mixin>mgd-php@2.0.0</mixin>
